@@ -31,23 +31,11 @@ learningRate = 0.005
 def activation_func(z):
     return 1 if z >= 0 else -1
 
-def negative_linear_func(funcRange):
-    linearX = []
-    linearY = []
-    
-    for index in range(funcRange + 1):
-        linearX.append(index - funcRange/2)
-        linearY.append(index *-1 + funcRange/2)
-    
-    return (linearX, linearY)
-
 def plot_data():
-    linearLine = negative_linear_func(4);
-    
-    plt.title("Initiale data 1x")
     plt.plot(X[0:12, 0] * w[0], X[0:12, 1] * w[1], 'ro')
     plt.plot(X[13:29, 0] * w[0], X[13:29, 1] * w[1], 'bo')
-    plt.plot(linearLine[0], linearLine[1])
+    
+    plt.plot(np.linspace(-1, 1), -np.linspace(-1, 1))
     plt.axis([-1, 1, -1, 1])
     plt.xlabel('x')
     plt.ylabel('y')
@@ -55,19 +43,43 @@ def plot_data():
     plt.axvline()
     plt.axhline()
     plt.show()
+    
+def plot_data_for_linear():
+    plt.plot(X[0:12, 0], X[0:12, 1], 'ro')
+    plt.plot(X[13:29, 0], X[13:29, 1], 'bo')
+    
+    plt.plot(np.linspace(-1, 1), -np.linspace(-1, 1))
+    plt.axis([-1, 1, -1, 1])
+    plt.xlabel('x')
+    plt.ylabel('y')
+    
+    plt.plot(np.linspace(-1, 1), -np.linspace(-1, 1) * (w[0]/w[1]))
+    
+    plt.axvline()
+    plt.axhline()
+    plt.show()
 
-for iteration in range(15):
+errors = []
+for iteration in range(8):
     y_hat = np.array(list(map(activation_func, X.dot(w))))
     global_error = y - y_hat
+    errors.append(np.absolute(global_error).sum())
+    
+    plot_data()
+    plot_data_for_linear()
 
     print('global error: ' + str(np.absolute(global_error).sum()))
+    print('w: ' + str(w))
     for input_index in range(global_error.size):
         local_error = global_error[input_index]
         x_cur = X[input_index]
         
         for w_index in range(w.size):
             w += learningRate*local_error*x_cur
-            
-    plot_data()
 
+# plot error            
+plt.plot(errors)
+plt.xlabel('iteration')
+plt.ylabel('error')
+plt.show()
     
