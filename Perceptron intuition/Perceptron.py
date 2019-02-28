@@ -9,6 +9,9 @@ import numpy as np
 
 np.random.seed(6)
 
+learningRate = 0.005
+space = np.linspace(-1, 1)
+
 X = np.array([
      [ 0.72, 0.82 ], [ 0.91, -0.69 ], [ 0.46, 0.80 ],
      [ 0.03, 0.93 ], [ 0.12, 0.25 ], [ 0.96, 0.47 ],
@@ -26,8 +29,6 @@ y = np.array([-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 
 w = np.array([np.random.normal(), np.random.normal()])
 
-learningRate = 0.005
-
 def activation_func(z):
     return 1 if z >= 0 else -1
 
@@ -35,7 +36,7 @@ def plot_data():
     plt.plot(X[0:12, 0] * w[0], X[0:12, 1] * w[1], 'ro')
     plt.plot(X[13:29, 0] * w[0], X[13:29, 1] * w[1], 'bo')
     
-    plt.plot(np.linspace(-1, 1), -np.linspace(-1, 1))
+    plt.plot(space, -space)
     plt.axis([-1, 1, -1, 1])
     plt.xlabel('x')
     plt.ylabel('y')
@@ -48,37 +49,38 @@ def plot_data_for_linear():
     plt.plot(X[0:12, 0], X[0:12, 1], 'ro')
     plt.plot(X[13:29, 0], X[13:29, 1], 'bo')
     
-    plt.plot(np.linspace(-1, 1), -np.linspace(-1, 1))
+    plt.plot(space, -space)
     plt.axis([-1, 1, -1, 1])
     plt.xlabel('x')
     plt.ylabel('y')
     
-    plt.plot(np.linspace(-1, 1), -np.linspace(-1, 1) * (w[0]/w[1]))
+    plt.plot(space, -space * (w[0]/w[1]))
     
     plt.axvline()
     plt.axhline()
     plt.show()
 
-errors = []
+run_errors = []
 for iteration in range(8):
     y_hat = np.array(list(map(activation_func, X.dot(w))))
-    global_error = y - y_hat
-    errors.append(np.absolute(global_error).sum())
+    errors = y - y_hat
+    global_error = np.absolute(errors).sum()
+    run_errors.append(global_error)
     
     plot_data()
     plot_data_for_linear()
 
-    print('global error: ' + str(np.absolute(global_error).sum()))
-    print('w: ' + str(w))
-    for input_index in range(global_error.size):
-        local_error = global_error[input_index]
+    print('global error: {}', global_error)
+    print('w: {}', w)
+    for input_index in range(errors.size):
+        local_error = errors[input_index]
         x_cur = X[input_index]
         
         for w_index in range(w.size):
             w += learningRate*local_error*x_cur
 
 # plot error            
-plt.plot(errors)
+plt.plot(run_errors)
 plt.xlabel('iteration')
 plt.ylabel('error')
 plt.show()
