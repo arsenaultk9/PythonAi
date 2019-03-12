@@ -6,6 +6,9 @@ Created on Mon Feb 18 09:28:09 2019
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
+
+sns.set()
 
 np.random.seed(6)
 
@@ -36,7 +39,7 @@ def plot_data():
     plt.plot(X[0:12, 0] * w[0], X[0:12, 1] * w[1], 'ro')
     plt.plot(X[13:29, 0] * w[0], X[13:29, 1] * w[1], 'bo')
     
-    plt.plot(space, -space)
+    plt.plot(space, -space, color='black')
     plt.axis([-1, 1, -1, 1])
     plt.xlabel('x')
     plt.ylabel('y')
@@ -49,12 +52,11 @@ def plot_data_for_linear():
     plt.plot(X[0:12, 0], X[0:12, 1], 'ro')
     plt.plot(X[13:29, 0], X[13:29, 1], 'bo')
     
-    plt.plot(space, -space)
     plt.axis([-1, 1, -1, 1])
     plt.xlabel('x')
     plt.ylabel('y')
     
-    plt.plot(space, -space * (w[0]/w[1]))
+    plt.plot(space, -space * (w[0]/w[1]), color='orange')
     
     plt.axvline()
     plt.axhline()
