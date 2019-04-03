@@ -73,7 +73,6 @@ def plot_data_for_linear():
     plt.plot(X[12:18, 0], X[12:18, 1], 'bo')
     plt.plot(X[18:24, 0], X[18:24, 1], 'mo')
     
-#    plt.plot(space, -space)
     plt.axis([-1, 1, -1, 1])
     plt.xlabel('x')
     plt.ylabel('y')
@@ -85,34 +84,78 @@ def plot_data_for_linear():
     plt.axhline()
     plt.show()
 
-plot_data_for_linear()
-
 run_errors = []
-for current_node in range(w.shape[0]):
-    for iteration in range(18):
-        current_activation = list(map(activation_func, X.dot(w[current_node])))
-        y_hat = np.array(current_activation)
-        errors = y[:,current_node] - y_hat
-        global_error = np.absolute(errors).sum()
-        run_errors.append(global_error)
-        
-        plot_data_for_linear()
-        plot_data()
+
+for iteration in range(15):
+    errors = 0
     
-        print('global error: {}', global_error)
-        print('w: {}', w)
+    dot_products = [];
+    for current_node in range(w.shape[0]):
+        current_dot = X.dot(w[current_node])
+        dot_products.append(current_dot)
+    
+    np_dot_products = np.array(dot_products).T
+    plot_data_for_linear()
+    plot_data()
+    
+    max_vals = np.max(np_dot_products, 1)
+    activated_classes = []
+    for x_col in range(np_dot_products.shape[0]):
+        activated_classes_row = []
         
-        w_current_node = w[current_node]
-        for input_index in range(errors.size):
-            local_error = errors[input_index]
-            x_cur = X[input_index]
+        for y_col in range(np_dot_products.shape[1]):
+            currentval = 1 if np_dot_products[x_col, y_col] == max_vals[x_col] else 0
+            activated_classes_row.append(currentval)
+        
+        activated_classes.append(activated_classes_row)
+    
+    activated_classes = np.array(activated_classes)
+    
+    for row in range(y.shape[0]):
+        for column in range(y.shape[1]):
+            error = y[row, column] - activated_classes[row, column]
+            errors += error;
             
+            w_current_node = w[column]
             for w_index in range(w_current_node.size):
-                w_current_node += learningRate*local_error*x_cur
+                w_current_node += learningRate*error*X[row]
+    
+    run_errors.append(errors)
+            
+plot_data_for_linear()
+plot_data()
 
 # plot error            
 plt.plot(run_errors)
 plt.xlabel('iteration')
 plt.ylabel('error')
 plt.show()
-    
+
+#for iteration in range(1):
+#    for current_node in range(w.shape[0]):  
+#        current_activation = list(map(activation_func, X.dot(w[current_node])))
+#        y_hat = np.array(current_activation)
+#        errors = y[:,current_node] - y_hat
+#        global_error = np.absolute(errors).sum()
+#        run_errors.append(global_error)
+#        
+#        plot_data_for_linear()
+#        plot_data()
+#    
+#        print('global error: {}', global_error)
+#        print('w: {}', w)
+#        
+#        w_current_node = w[current_node]
+#        for input_index in range(errors.size):
+#            local_error = errors[input_index]
+#            x_cur = X[input_index]
+#            
+#            for w_index in range(w_current_node.size):
+#                w_current_node += learningRate*local_error*x_cur
+#
+## plot error            
+#plt.plot(run_errors)
+#plt.xlabel('iteration')
+#plt.ylabel('error')
+#plt.show()
+#    
