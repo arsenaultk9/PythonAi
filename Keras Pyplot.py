@@ -46,3 +46,5 @@ plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
+
+tf.keras.models.save_model(model, 'model.h5')
