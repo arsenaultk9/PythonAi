@@ -10,20 +10,21 @@ import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
+
 # fix random seed for reproducibility
 seed = 7
-numpy.random.seed(seed)
+np.random.seed(seed)
 # load pima indians dataset
-dataset = numpy.loadtxt("pima-indians-diabetes.data.csv", delimiter=",")
+dataset = np.loadtxt("pima-indians-diabetes.data.csv", delimiter=",")
 # split into input (X) and output (Y) variables
 X = dataset[:,0:8]
 Y = dataset[:,8]
 # create model
 model = Sequential()
-model.add(Dense(12, input_dim=8, kernel_initializer='uniform', activation='relu'))
-model.add(Dense(8, kernel_initializer='uniform', activation='relu'))
-model.add(Dense(1, kernel_initializer='uniform', activation='sigmoid'))
+model.add(Dense(12, input_dim=8, kernel_initializer='uniform', activation='relu', name='input'))
+model.add(Dense(8, kernel_initializer='uniform', activation='relu', name='hidden_1'))
+model.add(Dense(1, kernel_initializer='uniform', activation='sigmoid', name='ouput'))
 # Compile model
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 # Fit the model
@@ -47,4 +48,5 @@ plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 
+prediction = model.predict(np.array([[6, 148, 72, 35, 0, 33.6, 0.627, 50]]))
 tf.keras.models.save_model(model, 'model.h5')
