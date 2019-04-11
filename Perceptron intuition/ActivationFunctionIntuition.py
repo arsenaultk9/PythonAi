@@ -14,7 +14,7 @@ Created on Mon Feb  4 08:51:06 2019
 
 import matplotlib.pyplot as plt
 import numpy as np
-import functions;
+import functions
 
 x = np.random.normal(size=40)
 y = np.random.normal(size=40)
