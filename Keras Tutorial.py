@@ -13,11 +13,11 @@ data = np.random.random([5, 1])
 labels = np.random.random([5, 1])
 
 model = tf.keras.Sequential([
-#input and hidden layers
-layers.Dense(6, activation=tf.nn.relu),
-layers.Dense(6, activation=tf.nn.relu),
-# output layer
-layers.Dense(2, activation='softmax')])
+    # input and hidden layers
+    layers.Dense(6, activation=tf.nn.relu),
+    layers.Dense(6, activation=tf.nn.relu),
+    # output layer
+    layers.Dense(2, activation='softmax')])
 
 model.compile(optimizer=tf.train.AdamOptimizer(0.001),
               loss='categorical_crossentropy',
