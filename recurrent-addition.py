@@ -76,7 +76,7 @@ class colors:
 # Parameters for the model and dataset.
 TRAINING_SIZE = 50000
 DIGITS = 3
-REVERSE = True
+REVERSE = False
 
 # Maximum length of input is 'int + int' (e.g., '345+678'). Maximum length of
 # int is DIGITS.
@@ -176,7 +176,7 @@ model.summary()
 
 # Train the model each generation and show predictions against the validation
 # dataset.
-for iteration in range(1, 200):
+for iteration in range(1, 50):
     print()
     print('-' * 50)
     print('Iteration', iteration)
