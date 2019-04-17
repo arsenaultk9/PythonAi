@@ -1,8 +1,14 @@
+# tensorboard cmd: tensorboard --logdir logs
+
 # univariate lstm example
 from numpy import array
+import keras
 from keras.models import Sequential
 from keras.layers import LSTM
 from keras.layers import Dense
+
+tbCallBack = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=False, write_images=False,
+                                         embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None, embeddings_data=None, update_freq='epoch')
 
 # split a univariate sequence into samples
 
@@ -37,7 +43,7 @@ model.add(LSTM(50, activation='relu', input_shape=(n_steps, n_features)))
 model.add(Dense(1))
 model.compile(optimizer='adam', loss='mse')
 # fit model
-model.fit(X, y, epochs=200, verbose=0)
+model.fit(X, y, epochs=200, verbose=0, callbacks=[tbCallBack])
 # demonstrate prediction
 x_input = array([70, 80, 90])
 x_input = x_input.reshape((1, n_steps, n_features))
