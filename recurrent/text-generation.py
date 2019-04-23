@@ -10,10 +10,7 @@ import random
 import sys
 import io
 
-path = get_file(
-    'nietzsche.txt',
-    origin='https://s3.amazonaws.com/text-datasets/nietzsche.txt')
-with io.open(path, encoding='utf-8') as f:
+with io.open("nostradamus-quatrains.txt") as f:
     text = f.read().lower()
 print('corpus length:', len(text))
 
@@ -92,9 +89,10 @@ def on_epoch_end(epoch, _):
             sys.stdout.flush()
         print()
 
+
 print_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 
 model.fit(x, y,
           batch_size=128,
-          epochs=60,
+          epochs=120,
           callbacks=[print_callback])
