@@ -34,7 +34,7 @@ model = Sequential()
 model.add(LSTM(128, input_shape=(31, 9)))
 model.add(Dense(9, activation='softmax'))
 
-optimizer = RMSprop(lr=0.01)
+optimizer = RMSprop(lr=0.001)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
 
