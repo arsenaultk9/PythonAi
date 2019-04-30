@@ -135,3 +135,8 @@ for i in range(ITER_NUM + 1):
         print("True :", c_bin)
         print(a_dec, "+", b_dec, "=", bin2dec(pred))
         print('----------')
+
+
+plt.plot(errs, label='error')
+plt.plot(accs, label='accuracy')
+plt.legend()
