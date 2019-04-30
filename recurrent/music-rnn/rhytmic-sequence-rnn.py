@@ -31,8 +31,7 @@ note_equivalents = {
 
 print('Build model...')
 model = Sequential()
-model.add(LSTM(9, return_sequences=True, input_shape=(31, 9)))
-model.add(LSTM(9))
+model.add(LSTM(128, input_shape=(31, 9)))
 model.add(Dense(9, activation='softmax'))
 
 optimizer = RMSprop(lr=0.01)
@@ -40,13 +39,8 @@ model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
 
 def sample(preds, temperature=1.0):
-    # helper function to sample an index from a probability array
     preds = np.asarray(preds).astype('float64')
-    preds = np.log(preds) / temperature
-    exp_preds = np.exp(preds)
-    preds = exp_preds / np.sum(exp_preds)
-    probas = np.random.multinomial(1, preds, 1)
-    return np.argmax(probas)
+    return np.argmax(preds)
 
 
 def on_epoch_end(epoch, _):
@@ -55,7 +49,7 @@ def on_epoch_end(epoch, _):
     print('----- Generating text after Epoch: %d' % epoch)
 
     start_index = random.randint(0, len(X) - maxlen - 1)
-    for diversity in [0.01]:
+    for diversity in [1.0]:
         print('----- diversity:', diversity)
 
         generated = ''
