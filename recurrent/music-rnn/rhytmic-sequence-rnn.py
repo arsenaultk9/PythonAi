@@ -38,6 +38,31 @@ optimizer = RMSprop(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 
 
+def one_hot_encoding_to_music_sequence(segment):
+    text = ''
+    for row in segment:
+        for index in range(row.size):
+            if(row[index] == True):
+                text += note_equivalents[index]
+
+    return text
+
+# music_sequences = []
+# for segment in X:
+#     music_sequence = one_hot_encoding_to_music_sequence(segment)
+#     music_sequences.append(music_sequence)
+
+# quarter_note_sequences = []
+# for sequence in music_sequences:
+#     is_sequence_included = True
+#     for sequence_char in sequence:
+#         if(sequence_char != '#' and sequence_char != 'Q'):
+#             is_sequence_included = False
+
+#     if(is_sequence_included):
+#         quarter_note_sequences.append(sequence)
+
+
 def sample(preds, temperature=1.0):
     preds = np.asarray(preds).astype('float64')
     return np.argmax(preds)
@@ -54,12 +79,7 @@ def on_epoch_end(epoch, _):
 
         generated = ''
         segment = X[start_index]
-        for row in segment:
-            for index in range(row.size):
-                if(row[index] == True):
-                    generated += note_equivalents[index]
-
-        generated += ' | '
+        generated += one_hot_encoding_to_music_sequence(segment) + ' | '
         sys.stdout.write(generated)
 
         for i in range(64):
