@@ -14,8 +14,8 @@ maxlen = 31
 with open("encoding.json", "r") as read_file:
     data = json.load(read_file)
 
-X = np.array(data['X'])
-Y = np.array(data['Y'])
+X = data['X']
+Y = data['Y']
 
 note_equivalents = {
     0: "#",
@@ -31,8 +31,8 @@ note_equivalents = {
 
 print('Build model...')
 model = Sequential()
-model.add(LSTM(128, input_shape=(31, 9)))
-model.add(Dense(9, activation='softmax'))
+model.add(LSTM(128, input_shape=(31, 9), name='input'))
+model.add(Dense(9, activation='softmax', name='ouput'))
 
 optimizer = RMSprop(lr=0.001)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
@@ -41,11 +41,12 @@ model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 def one_hot_encoding_to_music_sequence(segment):
     text = ''
     for row in segment:
-        for index in range(row.size):
+        for index in range(len(row)):
             if(row[index] == True):
                 text += note_equivalents[index]
 
     return text
+
 
 # music_sequences = []
 # for segment in X:
@@ -53,19 +54,42 @@ def one_hot_encoding_to_music_sequence(segment):
 #     music_sequences.append(music_sequence)
 
 # quarter_note_sequences = []
-# for sequence in music_sequences:
-#     is_sequence_included = True
-#     for sequence_char in sequence:
-#         if(sequence_char != '#' and sequence_char != 'Q'):
-#             is_sequence_included = False
+# index = 0
+# indices_to_remove = []
 
-#     if(is_sequence_included):
+# for sequence in music_sequences:
+#     quarter_or_silence_count = 0
+#     for sequence_char in sequence:
+#         if(sequence_char == '#' or sequence_char == 'Q'):
+#             quarter_or_silence_count += 1
+
+#     if(quarter_or_silence_count >= 29):
 #         quarter_note_sequences.append(sequence)
+#         indices_to_remove.append(index)
+
+#     index += 1
+
+# indices_to_remove.reverse()
+# for indice in indices_to_remove:
+#     del X[indice]
+#     del Y[indice]
 
 
 def sample(preds, temperature=1.0):
+    # helper function to sample an index from a probability array
     preds = np.asarray(preds).astype('float64')
-    return np.argmax(preds)
+    preds = np.log(preds) / temperature
+    exp_preds = np.exp(preds)
+    preds = exp_preds / np.sum(exp_preds)
+    probas = np.random.multinomial(1, preds, 1)
+    return np.argmax(probas)
+
+    # preds = np.asarray(preds).astype('float64')
+    # return np.argmax(preds)
+
+
+X = np.array(X)
+Y = np.array(Y)
 
 
 def on_epoch_end(epoch, _):
@@ -74,7 +98,7 @@ def on_epoch_end(epoch, _):
     print('----- Generating text after Epoch: %d' % epoch)
 
     start_index = random.randint(0, len(X) - maxlen - 1)
-    for diversity in [1.0]:
+    for diversity in [0.2, 0.5, 1.0, 1.2]:
         print('----- diversity:', diversity)
 
         generated = ''
@@ -104,5 +128,9 @@ print_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 
 model.fit(X, Y,
           batch_size=128,
-          epochs=120,
+          epochs=240,
+          shuffle=False,
           callbacks=[print_callback])
+
+model.save('rhytmic_sequence_model.h5')
+# tf.keras.models.save_model(model, 'model.h5')
