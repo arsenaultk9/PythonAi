@@ -13,7 +13,6 @@ def plot(data, title):
 
 
 normal_distribution = np.sort(np.random.random(100))
-plot(normal_distribution, 'normal distribution')
 
 log_temparature_distributions = []
 exponential_distributions = []
@@ -22,6 +21,7 @@ probability_distributions = []
 
 for diversity in [0.2, 0.5, 1.0, 1.2]:
     print('----- diversity:', diversity)
+    plot(normal_distribution, 'normal distribution')
 
     log_temparature_distribution = np.log(normal_distribution) / diversity
     log_temparature_distributions.append(log_temparature_distribution)
