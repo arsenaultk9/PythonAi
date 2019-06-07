@@ -1,4 +1,6 @@
 # Code from https://github.com/revsic/numpy-rnn/blob/master/RNN_numpy.ipynb
+# RNN Architecture: https://medium.com/@vsadhak/disassembling-recurrent-neural-networks-695ce75dddf6
+# Image architecture in folder
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,14 +23,14 @@ binary = np.unpackbits(decimal, axis=1)
 # Prepare weights and deltas
 
 # weight values
-w0 = np.random.normal(0, 1, [INPUT_DIM, HIDDEN_DIM])
-w1 = np.random.normal(0, 1, [HIDDEN_DIM, OUTPUT_DIM])
-wh = np.random.normal(0, 2, [HIDDEN_DIM, HIDDEN_DIM])
+wx = np.random.normal(0, 1, [INPUT_DIM, HIDDEN_DIM])
+wc = np.random.normal(0, 2, [HIDDEN_DIM, HIDDEN_DIM])
+wh = np.random.normal(0, 1, [HIDDEN_DIM, OUTPUT_DIM])
 
 # delta values
-d0 = np.zeros_like(w0)
-d1 = np.zeros_like(w1)
-dh = np.zeros_like(wh)
+d0 = np.zeros_like(wx)
+dh = np.zeros_like(wc)
+d1 = np.zeros_like(wh)
 
 errs = list()
 accs = list()
@@ -80,8 +82,8 @@ for i in range(ITER_NUM + 1):
         X = np.array([[a_bin[pos], b_bin[pos]]])  # shape=(1, 2)
         Y = np.array([[c_bin[pos]]])  # shape=(1, 1)
 
-        hidden = sigmoid(np.dot(X, w0) + np.dot(hidden_values[-1], wh))
-        output = sigmoid(np.dot(hidden, w1))
+        hidden = sigmoid(np.dot(X, wx) + np.dot(hidden_values[-1], wc))
+        output = sigmoid(np.dot(hidden, wh))
 
         pred[pos] = np.round(output[0][0])
 
@@ -100,8 +102,8 @@ for i in range(ITER_NUM + 1):
         prev_hidden = hidden_values[-(pos + 2)]
 
         output_delta = output_deltas[-(pos + 1)]
-        hidden_delta = (np.dot(future_delta, wh.T) +
-                        np.dot(output_delta, w1.T)) * deriv_sigmoid(hidden)
+        hidden_delta = (np.dot(future_delta, wc.T) +
+                        np.dot(output_delta, wh.T)) * deriv_sigmoid(hidden)
 
         d1 += np.dot(np.atleast_2d(hidden).T, output_delta)
         dh += np.dot(np.atleast_2d(prev_hidden).T, hidden_delta)
@@ -109,9 +111,9 @@ for i in range(ITER_NUM + 1):
 
         future_delta = hidden_delta
 
-    w1 += ALPHA * d1
-    w0 += ALPHA * d0
-    wh += ALPHA * dh
+    wh += ALPHA * d1
+    wx += ALPHA * d0
+    wc += ALPHA * dh
 
     d1 *= 0
     d0 *= 0
