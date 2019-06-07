@@ -2,6 +2,7 @@ import json
 import numpy as np
 import random
 import sys
+import tensorflow as tf
 
 from keras.callbacks import LambdaCallback
 from keras.models import Sequential
@@ -31,8 +32,8 @@ note_equivalents = {
 
 print('Build model...')
 model = Sequential()
-model.add(LSTM(128, input_shape=(31, 9)))
-model.add(Dense(9, activation='softmax'))
+model.add(LSTM(128, input_shape=(31, 9), name='input'))
+model.add(Dense(9, activation='softmax', name='ouput'))
 
 optimizer = RMSprop(lr=0.001)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer)
@@ -105,4 +106,6 @@ print_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 model.fit(X, Y,
           batch_size=128,
           epochs=120,
+          shuffle=False,
           callbacks=[print_callback])
+tf.keras.models.save_model(model, 'rhytmic_sequence_model.h5')
