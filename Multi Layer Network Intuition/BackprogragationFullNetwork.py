@@ -49,7 +49,7 @@ product_w1 = np.dot(X, w1)
 activation_w1 = np.array(list(map(sigmoid, product_w1)))
 activation_w2 = np.array(list(map(sigmoid, (activation_w1 * w2)[0])))
 
-cost = np.array(list(map(cost_function, Y, activation_w2)))
+cost = np.array(list(map(cost_function, Y, activation_w2))) / X.shape[0]
 
 for index in range(23):
     activation_w1 = sigmoid(x*w1)
