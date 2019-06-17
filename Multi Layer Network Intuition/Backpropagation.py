@@ -43,8 +43,8 @@ for index in range(23):
 
     y_hat_derivative = cost_derivative(y, y_hat)
 
-    derivative_w2 = y_hat_derivative * sigmoid_derivative(activation_w1)
-    derivative_w1 = derivative_w2 * sigmoid_derivative(x*w1)
+    derivative_w2 = y_hat_derivative * sigmoid_derivative(y_hat)
+    derivative_w1 = derivative_w2 * sigmoid_derivative(activation_w1)
 
     print('y_hat :', y_hat)
     print('w1 :', w1)
