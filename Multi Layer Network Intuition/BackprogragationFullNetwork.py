@@ -50,48 +50,29 @@ activation_w2 = np.array(list(map(sigmoid, (activation_w1 * w2)[0])))
 cost = np.array(list(map(cost_function, Y, activation_w2))) / X.shape[0]
 print('cost: ', np.sum(cost))
 
-for index in range(len(activation_w2)):
-    current_y_hat = activation_w2[index]
-    current_y = Y[index]
+for iteration in range(60):
+    for index in range(len(activation_w2)):
+        current_y_hat = activation_w2[index]
+        current_y = Y[index]
 
-    current_y_hat_derivative = cost_derivative(
-        current_y, current_y_hat) / X.shape[0]
+        current_y_hat_derivative = cost_derivative(
+            current_y, current_y_hat) / X.shape[0]
 
-    current_derivative_w2 = current_y_hat_derivative * \
-        sigmoid_derivative(activation_w2[index])
+        current_derivative_w2 = current_y_hat_derivative * \
+            sigmoid_derivative(activation_w2[index])
 
-    current_derivative_w1 = current_derivative_w2 * \
-        sigmoid_derivative(activation_w1[index])
-    
-    
+        current_derivative_w1 = current_derivative_w2 * \
+            sigmoid_derivative(activation_w1[index])
 
-# x = 0.5
-# y = 1
+        w1 = w1 - learning_rate * current_derivative_w1
+        w2 = w2 - learning_rate * current_derivative_w2
 
-# for index in range(23):
-#     activation_w1 = sigmoid(x*w1)
-#     y_hat = sigmoid(activation_w1*w2)
+product_w1 = np.dot(X, w1)
+activation_w1 = np.array(list(map(sigmoid, product_w1)))
+activation_w2 = np.array(list(map(sigmoid, (activation_w1 * w2)[0])))
 
-#     y_hat_derivative = cost_derivative(y, y_hat)
-
-#     derivative_w2 = y_hat_derivative * sigmoid_derivative(activation_w1)
-#     derivative_w1 = derivative_w2 * sigmoid_derivative(x*w1)
-
-#     print('y_hat :', y_hat)
-#     print('w1 :', w1)
-#     print('w2 :', w2)
-#     print('activation_w1 :', activation_w1)
-#     print('cost :', cost_function(y, y_hat))
-#     print('cost derivative:', y_hat_derivative)
-#     print('derivative_w2 :', derivative_w2)
-#     print('derivative_w1 :', derivative_w1)
-
-#     print('')
-#     print('===========================================')
-#     print('')
-
-#     w1 = w1 - learning_rate * derivative_w1
-#     w2 = w2 - learning_rate * derivative_w2
+cost = np.array(list(map(cost_function, Y, activation_w2))) / X.shape[0]
+print('cost: ', np.sum(cost))
 
 # # Gradiant graph in respect to the cost function
 # normal_dist = np.random.uniform(-3, 3, 400)
