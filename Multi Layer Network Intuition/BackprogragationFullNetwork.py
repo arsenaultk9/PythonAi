@@ -40,39 +40,42 @@ X = X / np.linalg.norm(X)
 
 learning_rate = 0.05
 
-w1 = np.random.rand(8, 1)
-w2 = np.random.rand(1, 1)
+w1 = np.random.rand(8, 8)
+w2 = np.random.rand(8, 1)
 
-product_w1 = np.dot(X, w1)
-activation_w1 = np.array(list(map(sigmoid, product_w1)))
-activation_w2 = np.array(list(map(sigmoid, (activation_w1 * w2)[0])))
+for iteration in range(600):
+    cost = 0
 
-cost = np.array(list(map(cost_function, Y, activation_w2))) / X.shape[0]
-print('cost: ', np.sum(cost))
+    for index in range(len(X)):
+        product_w1 = np.dot(X[index], w1)
+        activation_w1 = np.array(list(map(sigmoid, product_w1)))
 
-for iteration in range(60):
-    for index in range(len(activation_w2)):
-        current_y_hat = activation_w2[index]
+        product_w2 = np.dot(activation_w1, w2)
+        activation_w2 = np.array(list(map(sigmoid, product_w2)))
+
+        current_y_hat = activation_w2[0]
         current_y = Y[index]
+
+        cost += cost_function(current_y, current_y_hat)
 
         current_y_hat_derivative = cost_derivative(
             current_y, current_y_hat) / X.shape[0]
 
         current_derivative_w2 = current_y_hat_derivative * \
-            sigmoid_derivative(activation_w2[index])
+            sigmoid_derivative(activation_w2[0])
 
         current_derivative_w1 = current_derivative_w2 * \
-            sigmoid_derivative(activation_w1[index])
+            sigmoid_derivative(activation_w1[0])
 
         w1 = w1 - learning_rate * current_derivative_w1
         w2 = w2 - learning_rate * current_derivative_w2
 
-product_w1 = np.dot(X, w1)
-activation_w1 = np.array(list(map(sigmoid, product_w1)))
-activation_w2 = np.array(list(map(sigmoid, (activation_w1 * w2)[0])))
+    print('cost: ', cost)
 
-cost = np.array(list(map(cost_function, Y, activation_w2))) / X.shape[0]
-print('cost: ', np.sum(cost))
+# product_w1 = np.dot(X, w1)
+# activation_w1 = np.array(list(map(sigmoid, product_w1)))
+# activation_w2 = np.array(list(map(sigmoid, (activation_w1 * w2)[0])))
+
 
 # # Gradiant graph in respect to the cost function
 # normal_dist = np.random.uniform(-3, 3, 400)
