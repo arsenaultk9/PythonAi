@@ -45,6 +45,7 @@ w2 = np.random.rand(8, 1)
 
 for iteration in range(600):
     cost = 0
+    y_hats = []
 
     for index in range(len(X)):
         product_w1 = np.dot(X[index], w1)
@@ -54,6 +55,7 @@ for iteration in range(600):
         activation_w2 = np.array(list(map(sigmoid, product_w2)))
 
         current_y_hat = activation_w2[0]
+        y_hats.append(current_y_hat)
         current_y = Y[index]
 
         cost += cost_function(current_y, current_y_hat)
@@ -65,26 +67,9 @@ for iteration in range(600):
             sigmoid_derivative(activation_w2[0])
 
         current_derivative_w1 = current_derivative_w2 * \
-            sigmoid_derivative(activation_w1[0])
+            np.array(list(map(sigmoid_derivative, activation_w1)))
 
         w1 = w1 - learning_rate * current_derivative_w1
         w2 = w2 - learning_rate * current_derivative_w2
 
     print('cost: ', cost)
-
-# product_w1 = np.dot(X, w1)
-# activation_w1 = np.array(list(map(sigmoid, product_w1)))
-# activation_w2 = np.array(list(map(sigmoid, (activation_w1 * w2)[0])))
-
-
-# # Gradiant graph in respect to the cost function
-# normal_dist = np.random.uniform(-3, 3, 400)
-# normal_dist = np.sort(normal_dist)
-
-# normal_dist_cost = []
-# for normal_dist_point in normal_dist:
-#     current_cost = cost_function(y, normal_dist_point)
-#     normal_dist_cost.append(current_cost)
-
-# plt.plot(normal_dist, normal_dist_cost, 'ro')
-# plt.show()
