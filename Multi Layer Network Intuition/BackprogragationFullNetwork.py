@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import math
 
-np.random.seed(42)
+np.random.seed(420)
 
 
 def relu(val):
@@ -40,8 +40,8 @@ X = X / np.linalg.norm(X)
 
 learning_rate = 0.05
 
-w1 = np.random.rand(8, 8)
-w2 = np.random.rand(8, 1)
+w1 = np.random.rand(8, 4)
+w2 = np.random.rand(4, 1)
 
 for iteration in range(600):
     cost = 0
@@ -63,13 +63,25 @@ for iteration in range(600):
         current_y_hat_derivative = cost_derivative(
             current_y, current_y_hat) / X.shape[0]
 
+        # W2 update
         current_derivative_w2 = current_y_hat_derivative * \
-            sigmoid_derivative(activation_w2[0])
+            sigmoid_derivative(product_w2) * product_w2
 
-        current_derivative_w1 = current_derivative_w2 * \
-            np.array(list(map(sigmoid_derivative, activation_w1)))
-
-        w1 = w1 - learning_rate * current_derivative_w1
+        current_derivative_w2 = current_derivative_w2 * activation_w1
+        current_derivative_w2 = np.array(current_derivative_w2).reshape(4, 1)
         w2 = w2 - learning_rate * current_derivative_w2
 
+        # W1 update
+        current_derivative_w1 = current_derivative_w2 * \
+            np.array(list(map(sigmoid_derivative, product_w1))) * product_w1
+
+        for current_x_index in range(X[index].shape[0]):
+            current_derivative_w1_at_index = current_derivative_w1[1] * \
+                X[index][current_x_index]
+
+            w1[current_x_index] = w1[current_x_index] - \
+                learning_rate * current_derivative_w1_at_index
+
     print('cost: ', cost)
+    print('y: ', Y[4])
+    print('y_hat: ', y_hats[4])
