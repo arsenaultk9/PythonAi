@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import math
+from sklearn import preprocessing
 
 np.random.seed(420)
 
@@ -36,13 +37,13 @@ X = dataset[:, 0:8]
 Y = dataset[:, 8]
 
 # normalize X
-X = X / np.linalg.norm(X)
+X = preprocessing.scale(X)
 
-learning_rate = 0.5
+learning_rate = 0.05
 
 w1 = np.random.rand(8, 1)
 
-for iteration in range(6000):
+for iteration in range(900):
     cost = 0
     y_hats = []
 
@@ -66,10 +67,9 @@ for iteration in range(6000):
         current_derivative_w1 = current_activation_derivative * X[index]
         current_derivative_w1 = current_derivative_w1.reshape(8, 1)
 
-        # current_derivative_w1 = current_derivative_w1 * activation_w1
-        # current_derivative_w1 = current_derivative_w1.reshape(8, 1)
         w1 = w1 - learning_rate * current_derivative_w1
 
-    print('cost: ', cost)
-    print('y: ', Y[0])
-    print('y_hat: ', y_hats[0])
+    if(iteration % 100 == 0):
+        print('cost: ', cost)
+        print('y: ', Y[0:5])
+        print('y_hat: ', y_hats[0:5])
