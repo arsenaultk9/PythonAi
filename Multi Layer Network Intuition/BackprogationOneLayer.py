@@ -4,7 +4,7 @@ import seaborn as sns
 import math
 from sklearn import preprocessing
 
-np.random.seed(420)
+np.random.seed(42)
 
 
 def relu(val):
@@ -69,7 +69,8 @@ for iteration in range(900):
 
         w1 = w1 - learning_rate * current_derivative_w1
 
-    if(iteration % 100 == 0):
+    if(iteration % 100 == 0 or iteration == 0):
+        print('iteration: ', iteration)
         print('cost: ', cost)
         print('y: ', Y[0:5])
         print('y_hat: ', y_hats[0:5])
