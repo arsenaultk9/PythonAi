@@ -41,14 +41,15 @@ X = preprocessing.scale(X)
 
 learning_rate = 0.05
 
-w1 = np.random.rand(8, 1)
+w1 = np.random.rand(9, 1)
 
-for iteration in range(900):
+for iteration in range(9000):
     cost = 0
     y_hats = []
 
     for index in range(len(X)):
-        product_w1 = np.dot(X[index], w1)
+        current_x = np.r_[X[index], 1]  # Add bias
+        product_w1 = np.dot(current_x, w1)
         activation_w1 = sigmoid(product_w1)
 
         current_y_hat = activation_w1
@@ -64,8 +65,8 @@ for iteration in range(900):
         current_activation_derivative = current_y_hat_derivative * \
             sigmoid_derivative(product_w1)
 
-        current_derivative_w1 = current_activation_derivative * X[index]
-        current_derivative_w1 = current_derivative_w1.reshape(8, 1)
+        current_derivative_w1 = current_activation_derivative * current_x
+        current_derivative_w1 = current_derivative_w1.reshape(9, 1)
 
         w1 = w1 - learning_rate * current_derivative_w1
 

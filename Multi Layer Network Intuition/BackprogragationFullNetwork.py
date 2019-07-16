@@ -41,16 +41,18 @@ X = preprocessing.scale(X)
 
 learning_rate = 0.05
 
-w1 = np.random.rand(8, 4)
-w2 = np.random.rand(4, 1)
+w1 = np.random.rand(9, 4)
+w2 = np.random.rand(5, 1)
 
-for iteration in range(600):
+for iteration in range(9000):
     cost = 0
     y_hats = []
 
     for index in range(len(X)):
-        product_w1 = np.dot(X[index], w1)
+        current_x = np.r_[X[index], 1]  # Add bias
+        product_w1 = np.dot(current_x, w1)
         activation_w1 = np.array(list(map(sigmoid, product_w1)))
+        activation_w1 = np.r_[activation_w1, 1]  # Add bias
 
         product_w2 = np.dot(activation_w1, w2)
         activation_w2 = np.array(list(map(sigmoid, product_w2)))
@@ -69,20 +71,21 @@ for iteration in range(600):
             sigmoid_derivative(product_w2)
 
         current_derivative_w2 = current_derivative_w2_activation * activation_w1
-        current_derivative_w2 = np.array(current_derivative_w2).reshape(4, 1)
+        current_derivative_w2 = np.array(current_derivative_w2).reshape(5, 1)
 
         w2 = w2 - learning_rate * current_derivative_w2
 
         # W1 update
-        current_derivative_w1_activation = current_derivative_w2 * \
+        current_derivative_w1_activation = current_derivative_w2[0:4] * \
             np.array(list(map(sigmoid_derivative, product_w1))).reshape(4, 1)
 
-        current_derivative_w1 = np.dot(X[index].reshape(8, 1),
+        current_derivative_w1 = np.dot(current_x.reshape(9, 1),
                                        current_derivative_w1_activation.reshape(1, 4))
 
         w1 = w1 - learning_rate * current_derivative_w1
 
     if(iteration % 100 == 0):
+        print('iteration: ', iteration)
         print('cost: ', cost)
         print('y: ', Y[0:5])
         print('y_hat: ', y_hats[0:5])
