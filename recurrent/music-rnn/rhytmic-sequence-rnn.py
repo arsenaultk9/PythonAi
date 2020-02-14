@@ -9,6 +9,7 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
 from keras.optimizers import RMSprop
+from keras import metrics
 
 maxlen = 31
 
@@ -36,7 +37,8 @@ model.add(LSTM(128, input_shape=(31, 9), name='input'))
 model.add(Dense(9, activation='softmax', name='ouput'))
 
 optimizer = RMSprop(lr=0.001)
-model.compile(loss='categorical_crossentropy', optimizer=optimizer)
+model.compile(loss='categorical_crossentropy', optimizer=optimizer,
+              metrics=[metrics.mae, metrics.categorical_accuracy])
 
 
 def one_hot_encoding_to_music_sequence(segment):
@@ -49,33 +51,6 @@ def one_hot_encoding_to_music_sequence(segment):
     return text
 
 
-# music_sequences = []
-# for segment in X:
-#     music_sequence = one_hot_encoding_to_music_sequence(segment)
-#     music_sequences.append(music_sequence)
-
-# quarter_note_sequences = []
-# index = 0
-# indices_to_remove = []
-
-# for sequence in music_sequences:
-#     quarter_or_silence_count = 0
-#     for sequence_char in sequence:
-#         if(sequence_char == '#' or sequence_char == 'Q'):
-#             quarter_or_silence_count += 1
-
-#     if(quarter_or_silence_count >= 29):
-#         quarter_note_sequences.append(sequence)
-#         indices_to_remove.append(index)
-
-#     index += 1
-
-# indices_to_remove.reverse()
-# for indice in indices_to_remove:
-#     del X[indice]
-#     del Y[indice]
-
-
 def sample(preds, temperature=1.0):
     # helper function to sample an index from a probability array
     preds = np.asarray(preds).astype('float64')
@@ -84,9 +59,6 @@ def sample(preds, temperature=1.0):
     preds = exp_preds / np.sum(exp_preds)
     probas = np.random.multinomial(1, preds, 1)
     return np.argmax(probas)
-
-    # preds = np.asarray(preds).astype('float64')
-    # return np.argmax(preds)
 
 
 X = np.array(X)
@@ -128,10 +100,9 @@ def on_epoch_end(epoch, _):
 print_callback = LambdaCallback(on_epoch_end=on_epoch_end)
 
 model.fit(X, Y,
-        batch_size=128,
-        epochs=240,
-        shuffle=False,
-        callbacks=[print_callback])
+          batch_size=128,
+          epochs=240,
+          shuffle=False)  # ,
+# callbacks=[print_callback])
 
 model.save('rhytmic_sequence_model.h5')
-# tf.keras.models.save_model(model, 'model.h5')
