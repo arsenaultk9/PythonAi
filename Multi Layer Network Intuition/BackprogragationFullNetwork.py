@@ -64,7 +64,7 @@ for iteration in range(9000):
         cost += cost_function(current_y, current_y_hat) / X.shape[0]
 
         current_y_hat_derivative = cost_derivative(
-            current_y, current_y_hat) / X.shape[0]
+            current_y, current_y_hat)
 
         # W2 update
         current_derivative_w2_activation = current_y_hat_derivative * \
